@@ -1,0 +1,36 @@
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+
+# Environment variables
+.env
+.env.local
+
+# Node modules (if you add any npm dependencies later)
+node_modules/
+
+# Python cache (if you add Python scripts later)
+__pycache__/
+*.pyc
+*.pyo
+
+# Build outputs
+dist/
+build/
+

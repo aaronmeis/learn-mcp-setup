@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows Dev Setup - MCP Server Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            color: #eee;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Left Navigation Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #000000;
+            padding: 30px 20px;
+            border-right: 2px solid #333333;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            color: #00d9ff;
+            font-size: 18px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            font-size: 14px;
+            color: #b8c1ec;
+        }
+
+        .nav-item:hover {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: #1a1a1a;
+            border-left-color: #00d9ff;
+            color: #00d9ff;
+            font-weight: 600;
+        }
+
+        .nav-item .step-num {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            margin-right: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .nav-item.active .step-num {
+            background: #00d9ff;
+            color: #000000;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            padding: 60px 80px;
+            height: 100%;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Slide Counter */
+        .slide-counter {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 16px;
+            color: #7c8aaf;
+            font-weight: 500;
+        }
+
+        /* Slide Styles */
+        .slide h1 {
+            font-size: 56px;
+            color: #00d9ff;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .slide h2 {
+            font-size: 42px;
+            color: #fff;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .slide h3 {
+            font-size: 32px;
+            color: #b8c1ec;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            font-size: 28px;
+            color: #7c8aaf;
+            margin-top: -15px;
+            margin-bottom: 40px;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #00d9ff, #0099cc);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 80px;
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .content-box {
+            background: rgba(15, 52, 96, 0.4);
+            border: 2px solid #0f3460;
+            border-radius: 12px;
+            padding: 35px;
+            margin: 20px 0;
+        }
+
+        .tool-list {
+            list-style: none;
+            margin: 25px 0;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            margin: 15px 0;
+            background: rgba(0, 217, 255, 0.05);
+            border-left: 4px solid #00d9ff;
+            border-radius: 8px;
+            font-size: 22px;
+        }
+
+        .tool-icon {
+            width: 50px;
+            height: 50px;
+            background: #00d9ff;
+            border-radius: 8px;
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #16213e;
+        }
+
+        .command-block {
+            background: #0a0e1a;
+            border: 1px solid #00d9ff;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .command-block .prompt {
+            color: #00d9ff;
+            margin-right: 10px;
+        }
+
+        .url-box {
+            background: rgba(0, 217, 255, 0.1);
+            border: 2px dashed #00d9ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 24px;
+            color: #00d9ff;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .checklist li {
+            padding: 15px 15px 15px 50px;
+            margin: 12px 0;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 15px;
+            color: #00ff88;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: rgba(15, 52, 96, 0.3);
+            border: 2px solid #0f3460;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card h3 {
+            color: #00d9ff;
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        .card p {
+            color: #b8c1ec;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .big-number {
+            font-size: 72px;
+            font-weight: bold;
+            color: #00d9ff;
+            margin: 20px 0;
+            text-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+        }
+
+        .highlight {
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .note {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+            font-size: 18px;
+            color: #ffd54f;
+        }
+
+        /* Navigation Controls */
+        .nav-controls {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: rgba(0, 217, 255, 0.2);
+            border: 2px solid #00d9ff;
+            color: #00d9ff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 217, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Navigation Sidebar -->
+        <div class="sidebar">
+            <h2>Setup Guide</h2>
+            <div class="nav-item active" data-slide="0">
+                <span class="step-num">🏁</span> Welcome
+            </div>
+            <div class="nav-item" data-slide="1">
+                <span class="step-num">📋</span> Overview
+            </div>
+            <div class="nav-item" data-slide="2">
+                <span class="step-num">1</span> Core Tools
+            </div>
+            <div class="nav-item" data-slide="4">
+                <span class="step-num">2</span> Version Control
+            </div>
+            <div class="nav-item" data-slide="6">
+                <span class="step-num">3</span> Runtime Environments
+            </div>
+            <div class="nav-item" data-slide="10">
+                <span class="step-num">4</span> MCP Development Tools
+            </div>
+            <div class="nav-item" data-slide="14">
+                <span class="step-num">5</span> Environment Setup
+            </div>
+            <div class="nav-item" data-slide="15">
+                <span class="step-num">6</span> Project Setup
+            </div>
+            <div class="nav-item" data-slide="17">
+                <span class="step-num">7</span> Verification
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="slide-counter">
+                <span id="current-slide">1</span> / <span id="total-slides">13</span>
+            </div>
+
+            <!-- Slide 0: Welcome -->
+            <div class="slide active">
+                <h1>Windows Development Setup</h1>
+                <div class="subtitle">MCP Server Development Environment</div>
+                <div class="big-number">7 Steps</div>
+                <p style="font-size: 24px; color: #b8c1ec; margin-top: 30px;">
+                    Setting up your machine to work on LLM chatbot with multiple MCP servers
+                </p>
+                <div class="note" style="margin-top: 50px;">
+                    <strong>⌨️ Navigation:</strong> Use arrow keys (← →) or click the navigation menu
+                </div>
+            </div>
+
+            <!-- Slide 1: Overview -->
+            <div class="slide">
+                <h2>What We'll Install</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Development Tools</h3>
+                        <p>VS Code<br>Windows Terminal<br>Cursor (optional)</p>
+                    </div>
+                    <div class="card">
+                        <h3>Version Control</h3>
+                        <p>Git<br>GitHub CLI<br>SSH Keys</p>
+                    </div>
+                    <div class="card">
+                        <h3>Runtimes</h3>
+                        <p>Node.js (LTS)<br>Python 3.11+<br>TypeScript</p>
+                    </div>
+                    <div class="card">
+                        <h3>MCP Development</h3>
+                        <p>MCP SDKs<br>MCP Inspector<br>Claude Desktop</p>
+                    </div>
+                    <div class="card">
+                        <h3>Package Managers</h3>
+                        <p>npm<br>pip<br>uv (Python)</p>
+                    </div>
+                    <div class="card">
+                        <h3>Environment</h3>
+                        <p>API Keys<br>.env Files<br>Secure Config</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Step 1 - Core Tools Part 1 -->
+            <div class="slide">
+                <div class="step-number">1</div>
+                <h2>Install Core Development Tools</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">Visual Studio Code</h3>
+                    <div class="url-box">
+                        code.visualstudio.com
+                    </div>
+                    <ul class="checklist">
+                        <li>Download Windows installer (.exe)</li>
+                        <li>Check "Add to PATH"</li>
+                        <li>Check "Register as default editor"</li>
+                        <li>Install recommended extensions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 3: Step 1 - Core Tools Part 2 -->
+            <div class="slide">
+                <div class="step-number">1</div>
+                <h2>Install Core Development Tools</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">Windows Terminal</h3>
+                    <div class="url-box">
+                        Microsoft Store → "Windows Terminal"
+                    </div>
+                    <div class="note" style="margin-top: 30px;">
+                        <strong>💡 Tip:</strong> Set as default terminal application in Windows Settings
+                    </div>
+                </div>
+                <div class="content-box" style="margin-top: 30px;">
+                    <h3 style="color: #ffc107; margin-bottom: 25px;">Cursor (Optional Alternative Editor)</h3>
+                    <div class="url-box" style="border-color: #ffc107; background: rgba(255, 193, 7, 0.1);">
+                        cursor.com
+                    </div>
+                    <div class="note" style="background: rgba(0, 217, 255, 0.1); border-left-color: #00d9ff; color: #00d9ff;">
+                        <strong>ℹ️ Note:</strong> AI-powered code editor built on VS Code
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: Step 2 - Git Installation -->
+            <div class="slide">
+                <div class="step-number">2</div>
+                <h2>Install Git & GitHub</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">Git for Windows</h3>
+                    <div class="url-box">
+                        git-scm.com/download/win
+                    </div>
+                    <ul class="checklist">
+                        <li>Use default branch name "main"</li>
+                        <li>Git from command line and 3rd party</li>
+                        <li>Use bundled OpenSSH</li>
+                        <li>Checkout Windows-style, commit Unix-style</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 5: Step 2 - Git Configuration -->
+            <div class="slide">
+                <div class="step-number">2</div>
+                <h2>Configure Git</h2>
+                <div class="command-block">
+                    <div><span class="prompt">></span> git config --global user.name "Your Name"</div>
+                </div>
+                <div class="command-block">
+                    <div><span class="prompt">></span> git config --global user.email "your@email.com"</div>
+                </div>
+                <div class="command-block">
+                    <div><span class="prompt">></span> git config --global init.defaultBranch main</div>
+                </div>
+                <div class="note" style="margin-top: 30px;">
+                    <strong>🔑 Optional:</strong> Set up SSH keys for GitHub authentication
+                </div>
+            </div>
+
+            <!-- Slide 6: Step 3 - Node.js -->
+            <div class="slide">
+                <div class="step-number">3</div>
+                <h2>Install Node.js Runtime</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">Node.js (LTS Version)</h3>
+                    <div class="url-box">
+                        nodejs.org
+                    </div>
+                    <div class="big-number" style="font-size: 48px; margin: 30px 0;">
+                        v20.x LTS
+                    </div>
+                    <ul class="checklist">
+                        <li>Download Windows Installer (.msi)</li>
+                        <li>Install npm package manager</li>
+                        <li>Add to PATH automatically</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 7: Step 3 - Node.js Verification -->
+            <div class="slide">
+                <div class="step-number">3</div>
+                <h2>Verify Node.js Installation</h2>
+                <div class="command-block">
+                    <div><span class="prompt">></span> node --version</div>
+                    <div style="color: #b8c1ec; margin-top: 10px;">v20.11.0</div>
+                </div>
+                <div class="command-block">
+                    <div><span class="prompt">></span> npm --version</div>
+                    <div style="color: #b8c1ec; margin-top: 10px;">10.2.4</div>
+                </div>
+            </div>
+
+            <!-- Slide 8: Step 3 - Python -->
+            <div class="slide">
+                <div class="step-number">3</div>
+                <h2>Install Python Runtime</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">Python 3.11+</h3>
+                    <div class="url-box">
+                        python.org/downloads
+                    </div>
+                    <div class="big-number" style="font-size: 48px; margin: 30px 0;">
+                        3.11+
+                    </div>
+                    <ul class="checklist">
+                        <li>Download Windows installer (64-bit)</li>
+                        <li><strong>CRITICAL:</strong> Check "Add Python to PATH"</li>
+                        <li>Include pip package manager</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 9: Step 3 - TypeScript -->
+            <div class="slide">
+                <div class="step-number">3</div>
+                <h2>Install TypeScript</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">TypeScript Compiler</h3>
+                    <div class="command-block">
+                        <div><span class="prompt">></span> npm install -g typescript</div>
+                    </div>
+                    <div class="command-block">
+                        <div><span class="prompt">></span> npm install -g tsx</div>
+                    </div>
+                    <div class="note" style="margin-top: 30px;">
+                        <strong>📦 Note:</strong> tsx allows running TypeScript files directly without compiling
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 10: Step 4 - MCP SDK TypeScript -->
+            <div class="slide">
+                <div class="step-number">4</div>
+                <h2>Install MCP Development Tools</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">MCP SDK for TypeScript/JavaScript</h3>
+                    <div class="command-block">
+                        <div><span class="prompt">></span> npm install -g @modelcontextprotocol/sdk</div>
+                    </div>
+                    <div class="command-block">
+                        <div><span class="prompt">></span> npm install -g @anthropic-ai/sdk</div>
+                    </div>
+                    <div class="note" style="margin-top: 30px;">
+                        <strong>🔧 Purpose:</strong> Official SDKs for building MCP servers and clients
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 11: Step 4 - MCP SDK Python -->
+            <div class="slide">
+                <div class="step-number">4</div>
+                <h2>Install MCP SDK for Python</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">FastMCP & Python MCP SDK</h3>
+                    <div class="command-block">
+                        <div><span class="prompt">></span> pip install mcp</div>
+                    </div>
+                    <div class="command-block">
+                        <div><span class="prompt">></span> pip install anthropic</div>
+                    </div>
+                    <div class="note" style="margin-top: 30px;">
+                        <strong>⚡ Alternative:</strong> Use FastMCP for rapid prototyping
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 12: Step 4 - uv Package Manager -->
+            <div class="slide">
+                <div class="step-number">4</div>
+                <h2>Install uv (Modern Python Package Manager)</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">uv - Fast Python Package Manager</h3>
+                    <div class="url-box">
+                        docs.astral.sh/uv
+                    </div>
+                    <div class="command-block">
+                        <div><span class="prompt">></span> powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</div>
+                    </div>
+                    <div class="note" style="margin-top: 30px;">
+                        <strong>💡 Why uv?</strong> 10-100x faster than pip, recommended by MCP official docs
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 13: Step 4 - MCP Inspector -->
+            <div class="slide">
+                <div class="step-number">4</div>
+                <h2>Install MCP Inspector</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">MCP Inspector (Debugging Tool)</h3>
+                    <div class="command-block">
+                        <div><span class="prompt">></span> npx @modelcontextprotocol/inspector</div>
+                    </div>
+                    <div class="big-number" style="font-size: 42px; margin: 30px 0;">
+                        🔍
+                    </div>
+                    <div class="note" style="margin-top: 30px;">
+                        <strong>🐛 Critical Tool:</strong> Test and debug MCP servers before client integration
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 14: Step 4 - Claude Desktop (Optional) -->
+            <div class="slide">
+                <div class="step-number">4</div>
+                <h2>Claude Desktop (Optional)</h2>
+                <div class="content-box">
+                    <h3 style="color: #ffc107; margin-bottom: 25px;">Claude Desktop App</h3>
+                    <div class="url-box" style="border-color: #ffc107; background: rgba(255, 193, 7, 0.1);">
+                        claude.ai/download
+                    </div>
+                    <ul class="checklist">
+                        <li>Test MCP servers locally</li>
+                        <li>Requires manual JSON configuration</li>
+                        <li>Useful for development workflow</li>
+                    </ul>
+                    <div class="note" style="background: rgba(0, 217, 255, 0.1); border-left-color: #00d9ff; color: #00d9ff; margin-top: 30px;">
+                        <strong>ℹ️ Note:</strong> Optional but recommended for MCP testing
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 15: Step 5 - Environment Setup -->
+            <div class="slide">
+                <div class="step-number">5</div>
+                <h2>Environment Configuration</h2>
+                <div class="content-box">
+                    <h3 style="color: #00d9ff; margin-bottom: 25px;">Create .env File for API Keys</h3>
+                    <div class="command-block">
+                        <div><span class="prompt">></span> cd your-project</div>
+                    </div>
+                    <div class="command-block">
+                        <div><span class="prompt">></span> echo ANTHROPIC_API_KEY=your_key_here > .env</div>
+                    </div>
+                    <div class="note" style="margin-top: 30px;">
+                        <strong>🔐 Security:</strong> Never commit .env files to Git! Add to .gitignore
+                    </div>
+                    <div class="note" style="background: rgba(0, 217, 255, 0.1); border-left-color: #00d9ff; color: #00d9ff; margin-top: 15px;">
+                        <strong>📝 Get Keys:</strong> console.anthropic.com for Anthropic API keys
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 16: Step 6 - Project Setup Part 1 -->
+            <div class="slide">
+                <div class="step-number">6</div>
+                <h2>Clone & Setup Project</h2>
+                <h3 style="margin-bottom: 30px;">Navigate to your workspace</h3>
+                <div class="command-block">
+                    <div><span class="prompt">></span> cd C:\Dev</div>
+                </div>
+                <h3 style="margin: 40px 0 30px;">Clone your repository</h3>
+                <div class="command-block">
+                    <div><span class="prompt">></span> git clone https://github.com/yourorg/llm-chatbot.git</div>
+                </div>
+                <div class="command-block">
+                    <div><span class="prompt">></span> cd llm-chatbot</div>
+                </div>
+            </div>
+
+            <!-- Slide 17: Step 6 - Project Setup Part 2 -->
+            <div class="slide">
+                <div class="step-number">6</div>
+                <h2>Install Project Dependencies</h2>
+                <h3 style="margin-bottom: 30px;">Node.js dependencies</h3>
+                <div class="command-block">
+                    <div><span class="prompt">></span> npm install</div>
+                </div>
+                <h3 style="margin: 40px 0 30px;">Python dependencies (if applicable)</h3>
+                <div class="command-block">
+                    <div><span class="prompt">></span> pip install -r requirements.txt</div>
+                </div>
+                <div class="note" style="margin-top: 30px;">
+                    <strong>⏱️ Note:</strong> Installation may take several minutes
+                </div>
+            </div>
+
+            <!-- Slide 18: Step 7 - Verification -->
+            <div class="slide">
+                <div class="step-number">7</div>
+                <h2>Verify Everything Works</h2>
+                <div class="content-box">
+                    <h3 style="color: #00ff88; margin-bottom: 25px;">✓ Complete Checklist</h3>
+                    <ul class="checklist">
+                        <li>VS Code opens with <code>code .</code></li>
+                        <li>Git commands work: <code>git --version</code></li>
+                        <li>Node.js installed: <code>node --version</code></li>
+                        <li>TypeScript installed: <code>tsc --version</code></li>
+                        <li>Python installed: <code>python --version</code></li>
+                        <li>MCP SDKs installed</li>
+                        <li>Project dependencies installed</li>
+                        <li>Environment variables configured</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 19: Final Slide -->
+            <div class="slide">
+                <h1>You're Ready! 🚀</h1>
+                <div class="big-number" style="font-size: 120px;">✓</div>
+                <h2 style="text-align: center; margin-top: 40px;">
+                    Your Windows machine is now configured for<br>
+                    <span class="highlight">MCP Server Development</span>
+                </h2>
+                <div class="note" style="margin-top: 60px; text-align: center; font-size: 20px;">
+                    <strong>Next Steps:</strong> Open VS Code, review project README, and start coding!
+                </div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="nav-controls">
+                <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+                <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const navItems = document.querySelectorAll('.nav-item');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            if (n >= totalSlides) n = totalSlides - 1;
+            if (n < 0) n = 0;
+
+            slides[currentSlide].classList.remove('active');
+            currentSlide = n;
+            slides[currentSlide].classList.add('active');
+
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+
+            // Update navigation
+            updateNavigation();
+
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function updateNavigation() {
+            navItems.forEach((item, index) => {
+                const slideNum = parseInt(item.getAttribute('data-slide'));
+                if (currentSlide >= slideNum) {
+                    const nextSlideNum = navItems[index + 1] ? 
+                        parseInt(navItems[index + 1].getAttribute('data-slide')) : totalSlides;
+                    
+                    if (currentSlide < nextSlideNum) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Navigation item clicks
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const slideNum = parseInt(item.getAttribute('data-slide'));
+                showSlide(slideNum);
+            });
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
