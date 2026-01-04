@@ -2,6 +2,8 @@
 
 An interactive HTML presentation guide for setting up your Windows development environment for MCP (Model Context Protocol) server development.
 
+![Overview](./unnamed.png)
+
 ## 🚀 Quick Start
 
 ### Option 0: View on GitHub Pages (After Uploading)
@@ -84,4 +86,5 @@ Feel free to submit issues or pull requests if you'd like to improve this guide!
 ## 📄 License
 
 This project is open source and available for educational purposes.
+
 
