@@ -9,7 +9,7 @@ An interactive HTML presentation guide for setting up your Windows development e
 ### Option 0: View on GitHub Pages (After Uploading)
 Once uploaded to GitHub, enable GitHub Pages in your repository settings. The guide will be available at:
 ```
-https://YOUR_USERNAME.github.io/learn-mcp-setup/
+[https://aaronmeis.github.io/learn-mcp-setup/](https://aaronmeis.github.io/learn-mcp-setup/)
 ```
 GitHub Pages will automatically serve `index.html` - no server setup needed!
 
@@ -86,5 +86,6 @@ Feel free to submit issues or pull requests if you'd like to improve this guide!
 ## 📄 License
 
 This project is open source and available for educational purposes.
+
 
 
